@@ -78,39 +78,11 @@ int main(){
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
     // define variables for rendering 
-
     // all coordinate in openGL are 3d -> x,y,z
     // opengl only process 3d coordinates when they're in range between -1 to 1 in all 3 axes
     // coordinates within this is called normalized device coordinate 
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
-    };
-    // VBO are used to store large number of vertices in the GPU's memory
-    // it can be used to send large batches of data all at once to the GPU
-    // sending data to the GPU is very slow. try to send as much data at once
-    
-    unsigned int VBO;
-    // has a unique ID corresponding to that buffer
-    glGenBuffers(1, &VBO);
-
-    // buffer type of GL_ARRAY_BUFFER
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    // copies the previously defined vertex data into the buffer's memory
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // target, 
-    // size, 
-    // data, 
-    // (how the gpu manage the data 
-        // (GL_STATIC_DRAW: set only once and used many times) useful for static object
-        // (GL_DYNAMIC_DRAW : change a lot and used many times) useful for data that change frequently
-    // )
-
 
     // vertex shader
-
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -119,7 +91,6 @@ int main(){
     checkShaderSuccess(&vertexShader);
 
     // fragment shader
-
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
@@ -139,6 +110,39 @@ int main(){
     // delete shader object after linked into the program object
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+    // VBO are used to store large number of vertices in the GPU's memory
+    // it can be used to send large batches of data all at once to the GPU
+    // sending data to the GPU is very slow. try to send as much data at once
+    
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+
+    // has a unique ID corresponding to that buffer
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+
+    // buffer type of GL_ARRAY_BUFFER
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // copies the previously defined vertex data into the buffer's memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // target, 
+    // size, 
+    // data, 
+    // (how the gpu manage the data 
+        // (GL_STATIC_DRAW: set only once and used many times) useful for static object
+        // (GL_DYNAMIC_DRAW : change a lot and used many times) useful for data that change frequently
+    // )
+
+
 
     // link vertex attribute
     // vertex buffer data formating: 
@@ -157,10 +161,11 @@ int main(){
     // Normalized data or not
     // stride, space between conscutive vertex attributes (0 can be set to let OpenGL determine thge stride. (only works when values are tightly packed))
 
-    // VAO 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+
+    
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
 
 
